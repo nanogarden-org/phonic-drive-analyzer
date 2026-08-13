@@ -200,4 +200,4 @@ Likely next layers:
 
 ## License
 
-No software license has been selected for this repository yet. Add the license you want before public distribution or accepting outside contributions.
+This project is licensed under the [MIT License](LICENSE).
