@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "phonic-drive-analyzer"
+version = "0.2.0"
+description = "Batch-capable acoustic and state-space analyzer with optional Phonic Drive annotations"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.24",
+  "scipy>=1.10",
+  "matplotlib>=3.7",
+  "pydub>=0.25.1",
+  "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+]
+
+[project.scripts]
+phonic-drive = "phonic_drive_analysis_v2:main"
+
+[tool.setuptools]
+py-modules = ["phonic_drive_analysis_v2"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

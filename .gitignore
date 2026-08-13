@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+
+# Build
+build/
+dist/
+
+# Analyzer output
+phonic_drive_batch/
+*_analysis/
+runs/
+
+# Audio source files are intentionally ignored by default
+*.mp3
+*.wav
+*.flac
+*.ogg
+*.m4a
+*.aac
+*.wma
+*.aiff
+*.aif
+*.opus
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

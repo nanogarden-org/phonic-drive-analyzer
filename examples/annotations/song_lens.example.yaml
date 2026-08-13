@@ -1,0 +1,43 @@
+song_lens:
+  song_title: "Example Track"
+  artist: "Example Artist"
+
+  temporal_anchor:
+    duration: 240
+    initial_frequencies: [65.4, 130.8, 261.6]
+    anchor_type: "low drone with evolving upper texture"
+
+  frequency_layers:
+    - layer_id: 1
+      instruments: ["bass", "pad"]
+      range_hz: [40, 250]
+      modulation_type: "slow amplitude and filter movement"
+
+    - layer_id: 2
+      instruments: ["synth", "strings"]
+      range_hz: [250, 2000]
+      modulation_type: "expanding harmonic texture"
+
+  inflection_points:
+    - time: 42
+      change_type: "percussion enters"
+      magnitude: 0.8
+
+    - time: 126
+      change_type: "stereo field opens"
+      magnitude: 0.9
+
+  reflection_patterns:
+    - type: "recurring motif"
+      interval: 8
+      amplitude_variation: 0.2
+
+  resonance_anchors:
+    - type: "bass anchor"
+      frequency: 65.4
+      periodicity: 1
+
+  cognitive_field_effects:
+    perceived_motion: "outward sweep followed by continuous traversal"
+    dimensional_expansion: 0.8
+    stability_index: 0.7
