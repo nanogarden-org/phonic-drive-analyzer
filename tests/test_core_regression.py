@@ -1,7 +1,7 @@
 """Regression parity tests for the first v0.3 core extraction.
 
 These tests intentionally compare the new package functions against the v0.2
-monolith.  They are migration guards, not a claim that the v0.2 algorithms are
+monolith. They are migration guards, not a claim that the v0.2 algorithms are
 scientifically final.
 """
 
@@ -14,6 +14,9 @@ from phonic_drive.core import (
     align_length,
     build_motion,
     detect_transitions,
+    frame_signal,
+    pad_short,
+    rms_frames,
     robust_z,
     scale_01,
     spectral_bandwidth,
@@ -21,6 +24,8 @@ from phonic_drive.core import (
     spectral_flux,
     spectral_rolloff,
     stereo_features,
+    stft_frames,
+    zcr_frames,
 )
 
 
@@ -33,6 +38,23 @@ def test_numerical_helpers_match_legacy():
     assert_array_equalish(robust_z(x), legacy.robust_z(x))
     assert_array_equalish(scale_01(x), legacy.scale_01(x))
     assert_array_equalish(align_length(x[:3], 7), legacy.align_length(x[:3], 7))
+
+
+def test_audio_framing_and_stft_match_legacy():
+    sr = 22050
+    t = np.arange(sr // 2, dtype=np.float64) / sr
+    y = 0.65 * np.sin(2 * np.pi * 330.0 * t) + 0.15 * np.sin(2 * np.pi * 990.0 * t)
+
+    assert_array_equalish(pad_short(y[:100], 256), legacy.pad_short(y[:100], 256))
+    assert_array_equalish(frame_signal(y, 1024, 256), legacy.frame_signal(y, 1024, 256))
+    assert_array_equalish(rms_frames(y, 1024, 256), legacy.rms_frames(y, 1024, 256))
+    assert_array_equalish(zcr_frames(y, 1024, 256), legacy.zcr_frames(y, 1024, 256))
+
+    new_freqs, new_times, new_S = stft_frames(y, sr, 1024, 256)
+    old_freqs, old_times, old_S = legacy.stft_frames(y, sr, 1024, 256)
+    assert_array_equalish(new_freqs, old_freqs)
+    assert_array_equalish(new_times, old_times)
+    assert_array_equalish(new_S, old_S)
 
 
 def test_spectral_primitives_match_legacy():
