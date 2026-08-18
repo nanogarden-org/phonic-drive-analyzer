@@ -1,0 +1,64 @@
+schema:
+  name: phonic-drive-experience-report
+  version: "1.0"
+
+identity:
+  id: pd-experience-example
+  type: experience-report
+
+provenance:
+  created_at: 2026-08-18T00:00:00-04:00
+  created_by: user
+  software:
+    name: phonic-drive
+    version: "0.3.0-dev"
+
+relations:
+  session: pd-session-example
+  observes_artifact: pd-artifact-example
+  derived_from: []
+
+tags:
+  - example
+  - subjective-report
+
+epistemic_status:
+  layer: subjective-report
+  measurement_claim: false
+  physiological_measurement_claim: false
+  causation_claim: false
+
+listening_conditions:
+  listening_mode: headphones
+  posture: seated
+  eyes: closed
+  volume_description: comfortable
+
+events:
+  - event_id: P001
+    time_s: 63.84
+    capture_mode: live-marker
+    confidence_0_1: 0.8
+    bodily:
+      piloerection:
+        present: true
+        locations:
+          - back_of_neck
+          - forearms
+        onset: sudden
+      tingling:
+        present: false
+      pressure:
+        present: false
+      temperature_change:
+        present: false
+    spatial_phenomenology:
+      perceived_motion_without_body_motion: true
+      directions:
+        - forward
+        - expanding
+      rotation: false
+    affect:
+      arousal_0_10: 7
+      valence: neutral-positive
+    freeform_description: synthetic example event
