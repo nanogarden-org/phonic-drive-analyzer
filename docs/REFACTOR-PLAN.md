@@ -131,3 +131,23 @@ A public release should provide three independently reviewable layers:
 1. acoustic analyzer and reproducible outputs
 2. independent experience capture with explicit epistemic status
 3. correlation explorer that reports temporal association without automatic causal inference
+
+## Current migration status
+
+As of the first v0.3 extraction tranche:
+
+- `main` remains unchanged as the v0.2 reference implementation.
+- `src/phonic_drive/core/` now contains extracted numerical, framing/STFT, spectral, stereo, and state-space/transition primitives.
+- The legacy functions remain in `phonic_drive_analysis_v2.py`; no production call sites have been switched yet.
+- Migration regression tests compare the extracted functions directly against the legacy implementations on deterministic synthetic inputs.
+- Vault identity tests verify that content identity follows source bytes rather than filename/path and that managed IDs remain independent of content hashes.
+- The existing GitHub Actions matrix is being used as the first automated parity gate.
+
+### Current hold point
+
+Do not rewire the CLI or change the acoustic algorithms until the regression suite passes on the supported Python matrix. After that gate, the next structural tranche is:
+
+1. extract remaining analysis helpers (onsets, tempo, statistics, resonance checks, export helpers)
+2. introduce a package-level analysis service while retaining legacy compatibility
+3. add typed record models and YAML serialization alongside existing JSON
+4. wire artifact/session identity into newly generated v0.3 records
