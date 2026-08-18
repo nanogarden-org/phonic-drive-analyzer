@@ -1,0 +1,62 @@
+schema:
+  name: phonic-drive-acoustic-observation
+  version: "1.0"
+
+identity:
+  id: pd-acoustic-example
+  type: acoustic-observation
+
+provenance:
+  created_at: 2026-08-18T00:00:00-04:00
+  created_by: phonic-drive
+  software:
+    name: phonic-drive
+    version: "0.3.0-dev"
+
+relations:
+  session: pd-session-example
+  analyzes_artifact: pd-artifact-example
+  derived_from:
+    - pd-artifact-example
+
+tags:
+  - example
+  - measured-acoustics
+
+epistemic_status:
+  layer: measured-acoustic-state
+  measurement_claim: true
+  physiological_claim: false
+  cognitive_claim: false
+  causation_claim: false
+
+analysis_parameters:
+  target_sr: 22050
+  n_fft: 2048
+  hop: 512
+
+state_space:
+  dimensions:
+    - rms_energy
+    - spectral_centroid
+    - spectral_bandwidth
+    - rolloff85
+    - zero_crossing_rate
+    - spectral_flux
+    - stereo_width
+  projection:
+    x: spectral_centroid
+    y: rms_energy
+    z: stereo_width
+    note: visualization projection only; fuller timeline remains authoritative
+
+transition_candidates:
+  - event_id: A001
+    time_s: 63.42
+    transition_score: 0.87
+    normalized_magnitude: 0.96
+    dominant_change: stereo-space shift
+
+outputs:
+  timeline_csv: acoustic/timeline.csv
+  plots_directory: acoustic/plots
