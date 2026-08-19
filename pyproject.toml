@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "phonic-drive-analyzer"
-version = "0.2.0"
-description = "Batch-capable acoustic and state-space analyzer with optional Phonic Drive annotations"
+version = "0.3.0.dev0"
+description = "Time-resolved acoustic, motif, trial, and state-space research toolkit"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -22,10 +22,14 @@ dev = [
 ]
 
 [project.scripts]
+# Preserve the proven v2 CLI while v3 internals are migrated module-by-module.
 phonic-drive = "phonic_drive_analysis_v2:main"
 
 [tool.setuptools]
 py-modules = ["phonic_drive_analysis_v2"]
+
+[tool.setuptools.packages.find]
+include = ["phonic_drive*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
