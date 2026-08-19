@@ -1,18 +1,18 @@
 """Compatibility CLI for the incremental Phonic Drive v3 migration.
 
-The v2 module remains the orchestration shell for this migration stage.  Before
+The v2 module remains the orchestration shell for this migration stage. Before
 calling its ``main`` function, this adapter replaces extracted signal-analysis
-primitives with their package implementations.  This provides three benefits:
+primitives with their package implementations.
 
-1. the public ``phonic-drive`` command begins exercising the v3 package now;
-2. current v2 output formats and command-line behavior remain stable; and
-3. migration can proceed function-by-function with direct equivalence tests.
-
-The direct legacy invocation ``python phonic_drive_analysis_v2.py`` remains
-available as an untouched reference implementation during the transition.
+An opt-in ``--structural`` flag adds the first v3-native artifact,
+``structural_analysis.json``, beside each successful track output. The existing
+v2 summary/timeline schemas remain untouched.
 """
 
 from __future__ import annotations
+
+import sys
+from pathlib import Path
 
 import phonic_drive_analysis_v2 as legacy
 
@@ -34,6 +34,7 @@ from .analysis.transitions import (
     robust_z,
     scale_01,
 )
+from .structural import write_structural_analysis
 
 
 def install_v3_primitives() -> None:
@@ -62,11 +63,48 @@ def install_v3_primitives() -> None:
 
 
 def parser():
-    """Expose the existing parser for API compatibility."""
+    """Expose the legacy parser; ``--structural`` is handled by this adapter."""
     return legacy.parser()
 
 
+def _split_adapter_flags(argv: list[str]) -> tuple[list[str], bool]:
+    structural = "--structural" in argv
+    cleaned = [token for token in argv if token != "--structural"]
+    return cleaned, structural
+
+
+def _run_structural_exports(cleaned_argv: list[str]) -> None:
+    args = legacy.parser().parse_args(cleaned_argv)
+    files = legacy.resolve_inputs(args.inputs, args.recursive)
+    output_root = Path(args.output).expanduser()
+
+    for audio_path in files:
+        track_dir = output_root / f"{legacy.slugify(audio_path.stem)}_{legacy.source_id(audio_path)}"
+        # Only add structural output for tracks that completed the v2 pass.
+        if not (track_dir / "summary.json").exists():
+            continue
+        try:
+            result = write_structural_analysis(
+                audio_path,
+                track_dir / "structural_analysis.json",
+                target_sr=args.target_sr,
+                n_fft=args.n_fft,
+                hop=args.hop,
+            )
+            print(
+                f"  structural -> {track_dir / 'structural_analysis.json'} "
+                f"({len(result['motif_candidates'])} motif candidates)"
+            )
+        except Exception as exc:
+            print(f"[WARN] structural analysis failed for {audio_path}: {exc}", file=sys.stderr)
+
+
 def main(argv=None):
-    """Run the compatibility CLI with v3 primitives installed."""
+    """Run v2-compatible analysis with extracted v3 primitives installed."""
+    raw_argv = list(sys.argv[1:] if argv is None else argv)
+    cleaned_argv, structural = _split_adapter_flags(raw_argv)
     install_v3_primitives()
-    return legacy.main(argv)
+    status = legacy.main(cleaned_argv)
+    if structural and status == 0:
+        _run_structural_exports(cleaned_argv)
+    return status
