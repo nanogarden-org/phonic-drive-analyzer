@@ -22,8 +22,8 @@ dev = [
 ]
 
 [project.scripts]
-# Preserve the proven v2 CLI while v3 internals are migrated module-by-module.
-phonic-drive = "phonic_drive_analysis_v2:main"
+# Installed CLI now exercises extracted v3 primitives while retaining v2 orchestration/output compatibility.
+phonic-drive = "phonic_drive.cli:main"
 
 [tool.setuptools]
 py-modules = ["phonic_drive_analysis_v2"]
