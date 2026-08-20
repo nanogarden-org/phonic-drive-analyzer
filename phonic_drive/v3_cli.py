@@ -27,6 +27,7 @@ def parser() -> argparse.ArgumentParser:
     p.add_argument("--hypothesis-id", action="append", default=[], help="Hypothesis ID; may be repeated")
     p.add_argument("--transform-id", action="append", default=[], help="Stimulus transform/reconstruction ID; may be repeated")
     p.add_argument("--response-events", help="Optional path to a response-events JSON file")
+    p.add_argument("--behavior-events", help="Optional path to a K(t) behavior-events JSON file")
     return p
 
 
@@ -52,6 +53,7 @@ def main(argv=None) -> int:
 
     if args.participant:
         response_file = str(Path(args.response_events).expanduser()) if args.response_events else None
+        behavior_file = str(Path(args.behavior_events).expanduser()) if args.behavior_events else None
         manifest = build_session_manifest(
             participant_pseudonym=args.participant,
             source_audio=str(source),
@@ -60,6 +62,7 @@ def main(argv=None) -> int:
             hypothesis_ids=args.hypothesis_id,
             transform_ids=args.transform_id,
             response_events_file=response_file,
+            behavior_events_file=behavior_file,
         )
         manifest_path = manifest.write_json(output_dir / "session_manifest.json")
         artifacts["session_manifest_json"] = str(manifest_path)
