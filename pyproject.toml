@@ -28,6 +28,8 @@ phonic-drive = "phonic_drive.cli:main"
 phonic-drive-v3 = "phonic_drive.v3_cli:main"
 # Migration validation across a representative corpus.
 phonic-drive-corpus = "phonic_drive.corpus_runner:main"
+# Numbered study folders with sealed retrospective notes and prospective tracks.
+phonic-drive-study = "phonic_drive.study_cli:main"
 # Synchronized playback plus timestamp-first participant markers.
 phonic-drive-trial = "phonic_drive.trials.runner:main"
 # Aggregation, recipes, schema operations, and shared timeline visualization.
