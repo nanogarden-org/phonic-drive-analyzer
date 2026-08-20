@@ -1,0 +1,55 @@
+{
+  "schema": "phonic-drive-blind-pass-status-v1",
+  "corpus_id": "PD-CORPUS-001",
+  "status": "blind_acoustic_structural_pass_complete",
+  "annotation_contents_opened": false,
+  "analysis_basis": {
+    "target_sr": 22050,
+    "n_fft": 2048,
+    "hop": 512,
+    "bands": 10,
+    "transition_candidate_cap": 12,
+    "motif_candidate_cap": 24
+  },
+  "tracks": [
+    {
+      "sequence": 1,
+      "duration_s": 450.07238095238097,
+      "transition_candidates": 12,
+      "motif_candidates": 24,
+      "sealed_result_sha256": "167cf2f26fb182f7194bc3c8f97950848863934625587dcf5332f2dcf8f704a2"
+    },
+    {
+      "sequence": 2,
+      "duration_s": 209.76907029478457,
+      "transition_candidates": 12,
+      "motif_candidates": 24,
+      "sealed_result_sha256": "ae126b8e2512d2b4b3b1d486e55449ef5bac613175bdf173b0035e03a317eda4"
+    },
+    {
+      "sequence": 3,
+      "duration_s": 474.55786848072563,
+      "transition_candidates": 12,
+      "motif_candidates": 24,
+      "sealed_result_sha256": "5b2373ff3ad87106bad360c316fda1e316ad50fb019849c5f657b3c68c8a21fc"
+    },
+    {
+      "sequence": 4,
+      "duration_s": 195.99963718820862,
+      "transition_candidates": 12,
+      "motif_candidates": 24,
+      "sealed_result_sha256": "55a7e35663e11bbdc598ea741fbd249b22e5fb70ab8b4a852c394e46e40a2930"
+    },
+    {
+      "sequence": 5,
+      "duration_s": 159.9158276643991,
+      "transition_candidates": 12,
+      "motif_candidates": 24,
+      "sealed_result_sha256": "d05ebe9d1d99c41a1af17737cca84ea2777f827099bd2158b4648af7802da291"
+    }
+  ],
+  "cross_track_structural_pairs_similarity_ge_0_92": 10,
+  "sealed_summary_sha256": "292aeaa014885c3fc2f1b0b1f10b94af4c82bec1a2117afb65497a7c7a054003",
+  "disclosure_policy": "Do not disclose prospective track motif timestamps or structural details before fresh P(t) capture for sequences 04 and 05.",
+  "next_gate": "prospective_response_capture_04_05"
+}
