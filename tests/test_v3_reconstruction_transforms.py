@@ -3,6 +3,9 @@ from __future__ import annotations
 import numpy as np
 
 from phonic_drive.reconstruction import (
+    ReconstructionManifest,
+    TransformStep,
+    apply_manifest,
     circular_shift,
     envelope_noise_control,
     reverse_time,
@@ -52,3 +55,20 @@ def test_envelope_noise_control_is_reproducible_and_rms_matched():
     b = envelope_noise_control(x, seed=7)
     assert np.allclose(a, b)
     assert abs(rms(a) - rms(x)) < 1e-10
+
+
+def test_manifest_executes_declared_steps_in_order():
+    x = np.arange(12, dtype=float)
+    manifest = ReconstructionManifest(
+        reconstruction_id="R1",
+        source_stimulus_id="S1",
+        source_motif_ids=["M1"],
+        hypothesis_id="H1",
+        steps=[
+            TransformStep("reverse_time"),
+            TransformStep("circular_shift", parameters={"shift_s": 0.5}),
+        ],
+    )
+    y = apply_manifest(x, sr=4, manifest=manifest)
+    expected = np.roll(x[::-1], 2)
+    assert np.array_equal(y, expected)
