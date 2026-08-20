@@ -22,8 +22,10 @@ dev = [
 ]
 
 [project.scripts]
-# Installed CLI now exercises extracted v3 primitives while retaining v2 orchestration/output compatibility.
+# Compatibility command: v2 orchestration with extracted v3 primitives.
 phonic-drive = "phonic_drive.cli:main"
+# Native research command: one decode/STFT feeds A(t) and M(t).
+phonic-drive-v3 = "phonic_drive.v3_cli:main"
 
 [tool.setuptools]
 py-modules = ["phonic_drive_analysis_v2"]
