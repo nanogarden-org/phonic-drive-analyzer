@@ -8,11 +8,12 @@ import argparse
 from pathlib import Path
 
 from .exports import write_v3_bundle
+from .session import build_session_manifest
 from .track import analyze_track
 
 
 def parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Native single-pass Phonic Drive v3 structural analyzer")
+    p = argparse.ArgumentParser(description="Native single-pass Phonic Drive v3 analyzer")
     p.add_argument("input", help="One audio file")
     p.add_argument("--output", default="phonic_drive_v3", help="Output directory")
     p.add_argument("--target-sr", type=int, default=22050)
@@ -21,6 +22,11 @@ def parser() -> argparse.ArgumentParser:
     p.add_argument("--bands", type=int, default=10)
     p.add_argument("--relationship-window", type=float, default=2.0)
     p.add_argument("--motif-half-window", type=float, default=1.5)
+    p.add_argument("--participant", help="Optional participant pseudonym; enables session_manifest.json")
+    p.add_argument("--trial-id", help="Optional trial identifier linked into the session manifest")
+    p.add_argument("--hypothesis-id", action="append", default=[], help="Hypothesis ID; may be repeated")
+    p.add_argument("--transform-id", action="append", default=[], help="Stimulus transform/reconstruction ID; may be repeated")
+    p.add_argument("--response-events", help="Optional path to a response-events JSON file")
     return p
 
 
@@ -43,8 +49,24 @@ def main(argv=None) -> int:
     )
     output_dir = Path(args.output).expanduser() / source.stem
     artifacts = write_v3_bundle(track, output_dir)
+
+    if args.participant:
+        response_file = str(Path(args.response_events).expanduser()) if args.response_events else None
+        manifest = build_session_manifest(
+            participant_pseudonym=args.participant,
+            source_audio=str(source),
+            artifacts=artifacts,
+            trial_id=args.trial_id,
+            hypothesis_ids=args.hypothesis_id,
+            transform_ids=args.transform_id,
+            response_events_file=response_file,
+        )
+        manifest_path = manifest.write_json(output_dir / "session_manifest.json")
+        artifacts["session_manifest_json"] = str(manifest_path)
+
     print(f"Analyzed {source}")
     print(f"Duration: {track.duration_s:.2f} s")
+    print(f"Transition candidates: {len(track.transition_candidates)}")
     print(f"Motif candidates: {len(track.motif_candidates)}")
     print(f"Recurring pairs: {len(track.recurring_motif_pairs)}")
     for name, path in artifacts.items():
