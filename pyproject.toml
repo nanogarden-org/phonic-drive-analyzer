@@ -26,6 +26,12 @@ dev = [
 phonic-drive = "phonic_drive.cli:main"
 # Native research command: one decode/STFT feeds A(t) and M(t).
 phonic-drive-v3 = "phonic_drive.v3_cli:main"
+# Migration validation across a representative corpus.
+phonic-drive-corpus = "phonic_drive.corpus_runner:main"
+# Synchronized playback plus timestamp-first participant markers.
+phonic-drive-trial = "phonic_drive.trials.runner:main"
+# Aggregation, recipes, schema operations, and shared timeline visualization.
+phonic-drive-ops = "phonic_drive.ops_cli:main"
 
 [tool.setuptools]
 py-modules = ["phonic_drive_analysis_v2"]
