@@ -37,7 +37,7 @@ RECIPES = {
         "band_ablation",
         "Suppress a selected spectral band while retaining the rest of the signal.",
         ("timing", "unselected_frequency_content", "duration"),
-        ("selected_frequency_band"),
+        ("selected_frequency_band",),
         "spectral_ablation",
         {"low_hz": 40.0, "high_hz": 80.0, "gain": 0.0},
     ),
