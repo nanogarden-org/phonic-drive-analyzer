@@ -2,7 +2,7 @@ from pathlib import Path
 
 import numpy as np
 
-from phonic_drive.exports import structural_summary
+from phonic_drive.exports import acoustic_summary, structural_summary, write_v3_bundle
 from phonic_drive.interpreter import observation, temporal_proximity
 from phonic_drive.track import TrackAnalysis
 from phonic_drive.trials import ResponseEvent, event_windows, nearest_motifs
@@ -28,11 +28,29 @@ def _fake_track() -> TrackAnalysis:
     )
 
 
+def test_acoustic_summary_preserves_measured_layer():
+    summary = acoustic_summary(_fake_track())
+    assert summary["schema"] == "phonic-drive-acoustic-v3alpha1"
+    assert "centroid_hz" in summary["statistics"]
+    assert summary["state_space_axes"]["x"].startswith("spectral brightness")
+
+
 def test_structural_summary_preserves_motif_layer():
     summary = structural_summary(_fake_track())
     assert summary["schema"] == "phonic-drive-structural-v3alpha2"
     assert summary["motif_candidates"][0]["id"] == "M1"
     assert len(summary["mean_cross_band_relationship"]) == 2
+
+
+def test_v3_bundle_contains_acoustic_and_structural_artifacts(tmp_path: Path):
+    outputs = write_v3_bundle(_fake_track(), tmp_path)
+    expected = {
+        "acoustic_json", "acoustic_timeline_csv", "transitions_json",
+        "structural_json", "structural_timeline_csv", "motifs_json", "relationships_npz",
+    }
+    assert expected.issubset(outputs)
+    for key in expected:
+        assert Path(outputs[key]).exists()
 
 
 def test_response_windows_and_nearest_motif_are_descriptive():
