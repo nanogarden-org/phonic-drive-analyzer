@@ -1,0 +1,92 @@
+{
+  "schema": "phonic-drive-study-corpus-fixture-v1",
+  "corpus_id": "PD-CORPUS-001",
+  "source_zip_sha256": "9b5ecd97061970de6b8b090e3d0f4e12a51f7ae9b07329884da4dd0ced306710",
+  "blinding": {
+    "retrospective_annotation_contents_read_for_fixture": false,
+    "motif_discovery_must_not_consume_annotations": true,
+    "prospective_tracks_require_fresh_response_capture": true
+  },
+  "tracks": [
+    {
+      "sequence": 1,
+      "folder": "01 Clubbed to Death",
+      "study_role": "retrospective_known",
+      "audio": {
+        "name": "Rob Dougan - Clubbed to Death (Kurayamino Variation).mp3",
+        "size_bytes": 10803546,
+        "sha256": "3a0af0d5c840b46b6a2133902b5c09e5f966f700df181d93f1c85961b082fe5d"
+      },
+      "annotation": {
+        "name": "Phonic_Drive-Ride_Through --Clubbed to Death - 001.txt",
+        "size_bytes": 1588,
+        "sha256": "5a4a5deb757e793984f099e5c1ffa8d0df0162ec54b091a1f233e1b51b1a4a02",
+        "sealed": true
+      }
+    },
+    {
+      "sequence": 2,
+      "folder": "02 Paris - Else",
+      "study_role": "retrospective_known",
+      "audio": {
+        "name": "Else - Paris.mp3",
+        "size_bytes": 5036336,
+        "sha256": "dbc97e204696a5b16e609ac96928501fb27c8cb8a9a4301b56f170b1fbb44e71"
+      },
+      "annotation": {
+        "name": "Phonic_Drive-Ride_Through --Paris - 002.txt",
+        "size_bytes": 3288,
+        "sha256": "db216bbd2cfca8a4097cfc473b042205fbd65a192c95a62c6d12c628d052a15c",
+        "sealed": true
+      }
+    },
+    {
+      "sequence": 3,
+      "folder": "03 Right This Second",
+      "study_role": "retrospective_known",
+      "audio": {
+        "name": "deadmau5 - Right This Second.mp3",
+        "size_bytes": 11391021,
+        "sha256": "a2de29b331c911ff4ba95b5c065cc1ee2e073d8807d514fc98e1eb159c7723cf"
+      },
+      "annotation": {
+        "name": "Phonic_Drive-Ride_Through --Right This Second - 003.txt",
+        "size_bytes": 2016,
+        "sha256": "1b2262de019c25e8e187a35aae87a520a4fb8ed6b47ff2e1a764f6a3ea99cadc",
+        "sealed": true
+      }
+    },
+    {
+      "sequence": 4,
+      "folder": "04 LED Spirals",
+      "study_role": "prospective_untested",
+      "audio": {
+        "name": "Le Castle Vania - LED Spirals [Extended Full Length Version] from the movie John Wick (Official).mp3",
+        "size_bytes": 4705939,
+        "sha256": "6037b2bc3bb40c4eb75b2aef0408a8f8b47cdb1ba2b0ce2113e57528d957eabe"
+      },
+      "annotation": {
+        "name": "Phonic_Drive-Ride_Through --LED Spirals.untested.txt",
+        "size_bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sealed": true
+      }
+    },
+    {
+      "sequence": 5,
+      "folder": "05 Retribution",
+      "study_role": "prospective_untested",
+      "audio": {
+        "name": "Blue Stahli  - Retribution.mp3",
+        "size_bytes": 2647846,
+        "sha256": "8a6623899cb1c19c148bbd99405dcef76a80710488c2272f476fe3592fc2d27f"
+      },
+      "annotation": {
+        "name": "Phonic_Drive-Ride_Through --Retribution.untested.txt",
+        "size_bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sealed": true
+      }
+    }
+  ]
+}
