@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document records how the v3 engine moves from source audio through measured structure, participant observations, and evidence-oriented interpretation without collapsing those layers into one claim.
+This document records how the v3 engine moves from source audio through measured structure, participant observations, controlled trials, and evidence-oriented interpretation without collapsing those layers into one claim.
 
 ## 1. Single-pass track object
 
@@ -20,9 +20,7 @@ Audio
 
 The object intentionally does **not** contain participant reports or biological interpretation.
 
-### Why
-
-The previous compatibility path could recompute the same source audio for structural analysis. That was acceptable for migration but wasteful and conceptually fragmented. `TrackAnalysis` makes shared source data explicit and keeps derived layers synchronized to the same frame clock.
+`TrackAnalysis` keeps measured and structural layers synchronized to one frame clock and removes the architectural need to decode the same source again for structural work.
 
 ## 2. Native and compatibility commands
 
@@ -30,19 +28,17 @@ Two commands coexist during migration.
 
 ### `phonic-drive`
 
-Compatibility command. It preserves the established v2 orchestration and output schemas while routing extracted signal primitives through the v3 package.
+Compatibility command. It preserves established v2 orchestration/output behavior while routing extracted signal primitives through the v3 package.
 
 ### `phonic-drive-v3`
 
 Native research command. It creates a `TrackAnalysis` once and emits v3 structural artifacts directly.
 
-Example:
-
 ```powershell
 phonic-drive-v3 "song.mp3" --output "runs/v3-test"
 ```
 
-The compatibility command remains the behavioral reference until native output coverage and CI confidence are sufficient for an intentional switchover.
+The compatibility command remains the behavioral reference until native output coverage and validation justify an intentional switchover.
 
 ## 3. Structural artifact bundle
 
@@ -55,35 +51,19 @@ motifs.json
 relationships.npz
 ```
 
-### `structural_analysis.json`
+`structural_analysis.json` contains human/machine-readable structural summaries.
 
-Human- and machine-readable summary of band geometry, descriptive relationships, motif candidates, and recurrence.
+`structural_timeline.csv` preserves dense time-aligned band energy, first derivative / velocity, and second derivative / acceleration.
 
-### `structural_timeline.csv`
+`motifs.json` separates motif candidates and recurrence into durable objects suitable for later graph/provenance linking.
 
-Dense time-aligned values for every spectral band:
-
-```text
-energy
-first derivative / velocity
-second derivative / acceleration
-```
-
-This is the practical bridge into notebooks, visualization, clustering, and later user-event alignment.
-
-### `motifs.json`
-
-Motif candidates and structural recurrence are separated from the larger summary so they can become durable graph/provenance objects later.
-
-### `relationships.npz`
-
-Compressed numerical storage of the complete time-varying cross-band relationship tensor. JSON stores summaries; NPZ preserves the dense research representation.
+`relationships.npz` preserves the complete time-varying cross-band relationship tensor while JSON remains compact and inspectable.
 
 ## 4. Participant response stream P(t)
 
-`phonic_drive.trials` introduces `EventRecorder` and `ResponseEvent`.
+`phonic_drive.trials` contains `EventRecorder` and `ResponseEvent`.
 
-A user interface or hotkey layer can call:
+A hotkey/UI layer can record:
 
 ```text
 mark(response_type, intensity, region, confidence, note)
@@ -91,7 +71,7 @@ mark(response_type, intensity, region, confidence, note)
 
 The recorder uses a monotonic session clock and writes participant observations separately from acoustic analysis.
 
-Canonical windows currently include:
+Canonical pre-event windows include:
 
 ```text
 250 ms
@@ -102,29 +82,39 @@ Canonical windows currently include:
 10 s
 ```
 
-before an event, plus a configurable post-event window.
+plus a configurable post-event interval.
 
-## 5. Alignment is not interpretation
+`nearest_motifs()` only computes temporal proximity and lag. It does not assign causality or biological meaning.
 
-`nearest_motifs()` answers only:
+## 5. Reproducible trial layer T
 
-> Which measured motif candidates are temporally near this participant marker, and at what lag?
-
-It does not assign causality or biological meaning.
-
-This preserves the intended separation:
+`phonic_drive.trials.protocol` now provides:
 
 ```text
-A(t) measured acoustic state
-M(t) descriptive acoustic structure
-P(t) participant response reports
-K(t) future behavioral telemetry
-T    trial conditions
+StimulusCondition
+TrialManifest
+stable_seed()
+randomized_order()
+build_manifest()
+```
+
+This makes A/B/X ordering reproducible and places randomization inside trial provenance rather than leaving it as a manual procedural note.
+
+A trial manifest can connect:
+
+```text
+trial_id
+hypothesis_id
+participant pseudonym
+stimulus conditions
+transform IDs
+randomization seed
+presentation order
 ```
 
 ## 6. Interpreter evidence ladder
 
-`phonic_drive.interpreter` now encodes explicit evidence levels:
+`phonic_drive.interpreter` encodes explicit evidence levels:
 
 ```text
 0 observation
@@ -135,25 +125,69 @@ T    trial conditions
 5 reconstruction evidence
 ```
 
-The interpreter's job is therefore not to invent an explanation. Its job is to say what level of support exists for a statement and preserve the supporting records.
+The interpreter's job is not to invent an explanation. Its job is to state what kind of support exists and preserve the records supporting that statement.
 
-## 7. What remains next
+## 7. Reconstruction and ablation provenance
 
-The next engineering passes should proceed in this order:
+`phonic_drive.reconstruction` now provides manifests describing controlled stimulus variants before synthesis/rendering is implemented.
 
-1. add a native measured `A(t)` timeline/export so v3 no longer relies on v2 output formats for acoustic telemetry;
-2. add trial manifest/schema objects connecting stimulus, participant event file, transform, and hypothesis IDs;
-3. implement randomized A/B/X trial ordering and reproducible seeds;
-4. add motif-to-response aggregation across repeated sessions;
-5. add reconstruction/ablation transforms while retaining provenance to the source motif;
-6. add optional `K(t)` behavioral telemetry;
-7. only after those layers are stable, connect Model Lab synthetic dynamics to motif-space comparison.
+Each transform can record:
 
-## 8. Boundary for Model Lab
+```text
+reconstruction_id
+source stimulus
+source motif IDs
+hypothesis ID
+operation
+parameters
+properties preserved
+properties disrupted
+output path
+```
+
+This is the provenance bridge required for later questions such as:
+
+```text
+preserve band trajectory
+but disrupt timing order
+```
+
+or:
+
+```text
+preserve temporal envelope
+but alter timbre
+```
+
+A reconstruction should never become an anonymous derived audio file whose relationship to the hypothesis has been lost.
+
+## 8. Current implemented path
+
+```text
+Audio
+  -> one decode / one STFT
+       -> A(t) measured acoustic state
+       -> M(t) structural acoustic state
+            -> dense timeline
+            -> relationship tensor
+            -> motif candidates
+            -> recurrence
+
+P(t) participant response events
+T    reproducible randomized trial manifest
+R    reconstruction / ablation manifest
+
+A + M + P + T + R
+        -> evidence-oriented Interpreter
+```
+
+`K(t)` behavioral/workflow telemetry remains a future optional stream.
+
+## 9. Model Lab boundary
 
 Boid, field, reaction-diffusion, chemistry, or photon-like agent simulations remain a separate synthetic hypothesis layer.
 
-The permitted relationship is:
+Permitted relationship:
 
 ```text
 synthetic dynamics
@@ -161,7 +195,7 @@ synthetic dynamics
     -> compare geometry against empirical M(t)
 ```
 
-The prohibited shortcut is:
+Prohibited shortcut:
 
 ```text
 simulation resembles data
@@ -170,14 +204,26 @@ simulation resembles data
 
 Similarity is a hypothesis generator, not a causal conclusion.
 
-## 9. Migration criterion
+## 10. Next engineering passes
 
-The default `phonic-drive` command should switch from compatibility orchestration to the native `TrackAnalysis` engine only when:
+With single-pass analysis, structural exports, event capture, randomized manifests, evidence levels, and reconstruction provenance now scaffolded, the next work should proceed approximately as follows:
 
-- native A(t) outputs cover the useful v2 measured telemetry;
+1. add a native measured `A(t)` timeline/export so v3 fully covers useful measured telemetry without relying on v2 schemas;
+2. add motif-to-response aggregation across repeated sessions and stimuli;
+3. implement concrete reconstruction/ablation audio transforms behind the existing provenance contracts;
+4. add session/result manifests linking analysis IDs, event files, trial conditions, transforms, and interpreter outputs;
+5. add optional `K(t)` behavioral telemetry;
+6. add representative-corpus v2/v3 comparison tooling and discrepancy reports;
+7. only after the empirical pipeline is stable, connect Model Lab synthetic dynamics to motif-space comparison.
+
+## 11. Migration criterion
+
+The default `phonic-drive` command should switch from compatibility orchestration to native `TrackAnalysis` only when:
+
+- native `A(t)` outputs cover the useful v2 measured telemetry;
 - regression tests demonstrate acceptable numerical equivalence where equivalence is intended;
-- new M(t) outputs have stable schemas;
+- `M(t)` schemas are stable enough for trial/interpreter consumers;
 - CI passes across supported Python versions;
 - a representative audio corpus has been run through both paths without unexplained discrepancies.
 
-Until then, the dual-command arrangement is intentional technical scaffolding, not duplication by accident.
+Until then, the dual-command arrangement is intentional migration scaffolding rather than accidental duplication.
