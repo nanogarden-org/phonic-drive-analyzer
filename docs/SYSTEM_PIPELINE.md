@@ -2,11 +2,11 @@
 
 ## Purpose
 
-This document records how the v3 engine moves from source audio through measured structure, participant observations, controlled trials, and evidence-oriented interpretation without collapsing those layers into one claim.
+This document records how the v3 engine moves from source audio through measured structure, participant observations, controlled trials, reconstruction, behavioral telemetry, and evidence-oriented interpretation without collapsing those layers into one claim.
 
 ## 1. Single-pass track object
 
-`phonic_drive.track.TrackAnalysis` is the new computational center of the engine.
+`phonic_drive.track.TrackAnalysis` is the computational center of the native engine.
 
 One decode and one STFT feed both:
 
@@ -32,17 +32,49 @@ Compatibility command. It preserves established v2 orchestration/output behavior
 
 ### `phonic-drive-v3`
 
-Native research command. It creates a `TrackAnalysis` once and emits v3 structural artifacts directly.
+Native research command. It creates a `TrackAnalysis` once and emits native A(t) and M(t) artifacts directly.
 
 ```powershell
 phonic-drive-v3 "song.mp3" --output "runs/v3-test"
 ```
 
+Optional provenance linkage can be added with participant/trial/hypothesis/transform arguments so the same run also emits `session_manifest.json`.
+
 The compatibility command remains the behavioral reference until native output coverage and validation justify an intentional switchover.
 
-## 3. Structural artifact bundle
+## 3. Native A(t) measured artifact bundle
 
-The native engine emits:
+The native engine now emits:
+
+```text
+acoustic_summary.json
+acoustic_timeline.csv
+transitions.json
+```
+
+`acoustic_summary.json` stores compact descriptive statistics and the native state-space axis definitions.
+
+`acoustic_timeline.csv` preserves the measured per-frame telemetry used by the v2 analyzer:
+
+```text
+RMS / RMS dB
+spectral centroid
+spectral bandwidth
+85% rolloff
+zero-crossing rate
+spectral flux
+stereo correlation / width
+state X/Y/Z
+transition speed / acceleration
+```
+
+`transitions.json` separates candidate acoustic transition events into a durable object.
+
+These are measured acoustic records, not cognitive or physiological labels.
+
+## 4. Native M(t) structural artifact bundle
+
+The same single-pass analysis emits:
 
 ```text
 structural_analysis.json
@@ -55,11 +87,11 @@ relationships.npz
 
 `structural_timeline.csv` preserves dense time-aligned band energy, first derivative / velocity, and second derivative / acceleration.
 
-`motifs.json` separates motif candidates and recurrence into durable objects suitable for later graph/provenance linking.
+`motifs.json` separates motif candidates and recurrence into durable objects suitable for graph/provenance linking.
 
 `relationships.npz` preserves the complete time-varying cross-band relationship tensor while JSON remains compact and inspectable.
 
-## 4. Participant response stream P(t)
+## 5. Participant response stream P(t)
 
 `phonic_drive.trials` contains `EventRecorder` and `ResponseEvent`.
 
@@ -86,9 +118,9 @@ plus a configurable post-event interval.
 
 `nearest_motifs()` only computes temporal proximity and lag. It does not assign causality or biological meaning.
 
-## 5. Reproducible trial layer T
+## 6. Reproducible trial layer T
 
-`phonic_drive.trials.protocol` now provides:
+`phonic_drive.trials.protocol` provides:
 
 ```text
 StimulusCondition
@@ -100,19 +132,55 @@ build_manifest()
 
 This makes A/B/X ordering reproducible and places randomization inside trial provenance rather than leaving it as a manual procedural note.
 
-A trial manifest can connect:
+A trial manifest can connect trial ID, hypothesis ID, participant pseudonym, stimulus conditions, transform IDs, randomization seed, and presentation order.
+
+## 7. Behavioral/workflow telemetry K(t)
+
+`phonic_drive.behavior` now provides a minimal `BehaviorEvent` / `BehaviorRecorder` contract using the same monotonic-session-clock approach as participant events.
+
+Examples include:
 
 ```text
-trial_id
-hypothesis_id
-participant pseudonym
-stimulus conditions
-transform IDs
-randomization seed
-presentation order
+typing_rate
+backspace_rate
+pause_duration
+manual_marker
+active_window change
+workflow burst
 ```
 
-## 6. Interpreter evidence ladder
+These are observable workflow/input events. They must not be promoted into direct measurements of cognition merely because they are synchronized to audio.
+
+## 8. Session/result provenance
+
+`phonic_drive.session.SessionManifest` links independent artifacts without merging their meanings.
+
+A manifest can connect:
+
+```text
+session ID
+participant pseudonym
+source audio
+A(t) analysis ID and files
+M(t) structural ID and files
+P(t) response-event file
+K(t) behavior-event file
+trial ID
+hypothesis IDs
+transform/reconstruction IDs
+```
+
+Stable hash-derived IDs make repeated automated runs linkable without depending on filenames alone.
+
+## 9. Repeated-session aggregation
+
+`phonic_drive.interpreter.aggregate_motif_response()` summarizes repeated temporal motif/response associations across sessions and stimuli.
+
+It records association rate, match count, lag statistics, and supporting session records.
+
+The output remains an association record. Repetition raises evidence quality but does not by itself establish causality.
+
+## 10. Interpreter evidence ladder
 
 `phonic_drive.interpreter` encodes explicit evidence levels:
 
@@ -127,46 +195,56 @@ presentation order
 
 The interpreter's job is not to invent an explanation. Its job is to state what kind of support exists and preserve the records supporting that statement.
 
-## 7. Reconstruction and ablation provenance
+## 11. Reconstruction and ablation R
 
-`phonic_drive.reconstruction` now provides manifests describing controlled stimulus variants before synthesis/rendering is implemented.
+`phonic_drive.reconstruction` contains both provenance contracts and deterministic first-generation transforms.
 
-Each transform can record:
-
-```text
-reconstruction_id
-source stimulus
-source motif IDs
-hypothesis ID
-operation
-parameters
-properties preserved
-properties disrupted
-output path
-```
-
-This is the provenance bridge required for later questions such as:
+Implemented operations include:
 
 ```text
-preserve band trajectory
-but disrupt timing order
+reverse_time
+circular_shift
+spectral_ablation
+segment_shuffle
+RMS matching
+envelope-preserving noise control
 ```
 
-or:
+A `ReconstructionManifest` records what is preserved, what is disrupted, operation parameters, source stimulus/motif IDs, and the hypothesis being tested.
+
+The manifest can now directly drive transform execution and WAV rendering.
+
+This creates a traceable path from:
 
 ```text
-preserve temporal envelope
-but alter timbre
+hypothesis
+  -> declared transform
+  -> rendered stimulus
+  -> randomized trial
+  -> participant/behavior observations
+  -> evidence update
 ```
 
-A reconstruction should never become an anonymous derived audio file whose relationship to the hypothesis has been lost.
+## 12. Migration and corpus validation
 
-## 8. Current implemented path
+`phonic_drive.validation` compares overlapping numeric timeline columns between reference and candidate runs and aggregates discrepancy metrics across a corpus.
+
+This supports the migration criterion with data rather than intuition:
+
+```text
+v2 timeline
+   <->
+v3 acoustic_timeline
+   -> per-column error metrics
+   -> corpus discrepancy report
+```
+
+## 13. Current implemented path
 
 ```text
 Audio
   -> one decode / one STFT
-       -> A(t) measured acoustic state
+       -> A(t) native measured acoustic state
        -> M(t) structural acoustic state
             -> dense timeline
             -> relationship tensor
@@ -174,16 +252,19 @@ Audio
             -> recurrence
 
 P(t) participant response events
+K(t) optional behavioral/workflow events
 T    reproducible randomized trial manifest
-R    reconstruction / ablation manifest
+R    executable reconstruction / ablation manifest
 
-A + M + P + T + R
+SessionManifest links artifacts and IDs without collapsing layers.
+
+A + M + P + K + T + R
         -> evidence-oriented Interpreter
+        -> repeated-session aggregation
+        -> perturbation / reconstruction tests
 ```
 
-`K(t)` behavioral/workflow telemetry remains a future optional stream.
-
-## 9. Model Lab boundary
+## 14. Model Lab boundary
 
 Boid, field, reaction-diffusion, chemistry, or photon-like agent simulations remain a separate synthetic hypothesis layer.
 
@@ -204,19 +285,19 @@ simulation resembles data
 
 Similarity is a hypothesis generator, not a causal conclusion.
 
-## 10. Next engineering passes
+## 15. Next engineering passes
 
-With single-pass analysis, structural exports, event capture, randomized manifests, evidence levels, and reconstruction provenance now scaffolded, the next work should proceed approximately as follows:
+The empirical spine is now scaffolded end to end. The next work should focus on depth and operational usability rather than adding more conceptual layers:
 
-1. add a native measured `A(t)` timeline/export so v3 fully covers useful measured telemetry without relying on v2 schemas;
-2. add motif-to-response aggregation across repeated sessions and stimuli;
-3. implement concrete reconstruction/ablation audio transforms behind the existing provenance contracts;
-4. add session/result manifests linking analysis IDs, event files, trial conditions, transforms, and interpreter outputs;
-5. add optional `K(t)` behavioral telemetry;
-6. add representative-corpus v2/v3 comparison tooling and discrepancy reports;
-7. only after the empirical pipeline is stable, connect Model Lab synthetic dynamics to motif-space comparison.
+1. add a corpus-runner command that executes v2/v3 paired analyses and writes discrepancy reports automatically;
+2. add a participant hotkey/UI trial runner that synchronizes playback, P(t), and optional K(t);
+3. add response/motif aggregation keyed through session manifests rather than ad-hoc in-memory session dictionaries;
+4. add reconstruction recipes for specific falsification questions such as timing-order disruption, spectral-band removal, and envelope-preserved controls;
+5. add schema validation/version migration for durable YAML/JSON artifacts;
+6. add visualization of A(t), M(t), P(t), and K(t) on a shared but visually separated time axis;
+7. only after representative empirical trials are stable, connect Model Lab synthetic dynamics to motif-space comparison.
 
-## 11. Migration criterion
+## 16. Migration criterion
 
 The default `phonic-drive` command should switch from compatibility orchestration to native `TrackAnalysis` only when:
 
