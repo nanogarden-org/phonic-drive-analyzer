@@ -1,5 +1,6 @@
-"""Reconstruction, ablation, rendering, and provenance for Phonic Drive v3."""
+"""Reconstruction, ablation, rendering, recipes, and provenance for Phonic Drive v3."""
 from .protocol import ReconstructionManifest, TransformStep, ablation_manifest
+from .recipes import RECIPES, Recipe, build_recipe_manifest, list_recipes
 from .render import apply_manifest, apply_step, render_manifest
 from .transforms import (
     circular_shift,
@@ -15,6 +16,10 @@ __all__ = [
     "ReconstructionManifest",
     "TransformStep",
     "ablation_manifest",
+    "Recipe",
+    "RECIPES",
+    "list_recipes",
+    "build_recipe_manifest",
     "apply_step",
     "apply_manifest",
     "render_manifest",
