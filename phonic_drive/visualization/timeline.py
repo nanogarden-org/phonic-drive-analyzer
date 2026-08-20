@@ -10,6 +10,8 @@ import csv
 import json
 from pathlib import Path
 
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 
@@ -54,18 +56,17 @@ def plot_shared_timeline(
 
     figure, axes = plt.subplots(4, 1, figsize=(13, 10), sharex=True)
 
-    # A(t): selected measured acoustic state.
     at, rms_db = _float_column(acoustic, "rms_db")
-    _, speed = _float_column(acoustic, "transition_speed")
+    st, speed = _float_column(acoustic, "transition_speed")
     if at:
         axes[0].plot(at, rms_db, label="RMS dB")
-    if speed:
-        axes[0].plot(at[: len(speed)], speed, label="transition speed")
+    if st:
+        axes[0].plot(st, speed, label="transition speed")
     axes[0].set_ylabel("A(t)")
     axes[0].set_title("Measured acoustic state")
-    axes[0].legend(loc="upper right")
+    if at or st:
+        axes[0].legend(loc="upper right")
 
-    # M(t): show all band-energy trajectories faintly plus motif peaks.
     band_columns = [name for name in (structural[0].keys() if structural else []) if name.endswith("_energy")]
     for name in band_columns:
         mt, values = _float_column(structural, name)
@@ -78,7 +79,6 @@ def plot_shared_timeline(
     axes[1].set_ylabel("M(t)")
     axes[1].set_title("Structural band trajectories and motif candidates")
 
-    # P(t): participant observations as event ticks.
     for i, event in enumerate(responses):
         t = event.get("session_time_s")
         if t is None:
@@ -88,7 +88,6 @@ def plot_shared_timeline(
     axes[2].set_ylabel("P(t)")
     axes[2].set_title("Participant response markers")
 
-    # K(t): observable workflow/input events only.
     for i, event in enumerate(behavior):
         t = event.get("session_time_s")
         if t is None:
