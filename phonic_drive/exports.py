@@ -72,3 +72,35 @@ def write_structural_timeline(track: TrackAnalysis, path: Path) -> Path:
                 row += [float(track.band_trajectories[i,t]), float(track.band_velocity[i,t]), float(track.band_acceleration[i,t])]
             writer.writerow(row)
     return path
+
+
+def write_motifs_json(track: TrackAnalysis, path: Path) -> Path:
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "schema": "phonic-drive-motifs-v3alpha1",
+        "source": str(track.source),
+        "motifs": track.motif_candidates,
+        "recurring_pairs": track.recurring_motif_pairs,
+    }
+    path.write_text(json.dumps(json_ready(payload), indent=2, ensure_ascii=False), encoding="utf-8")
+    return path
+
+
+def write_relationships_npz(track: TrackAnalysis, path: Path) -> Path:
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    np.savez_compressed(path, times=track.times, band_edges_hz=track.band_edges_hz, relationships=track.relationships)
+    return path
+
+
+def write_v3_bundle(track: TrackAnalysis, output_dir: Path) -> dict[str, str]:
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    outputs = {
+        "structural_json": write_structural_json(track, output_dir / "structural_analysis.json"),
+        "structural_timeline_csv": write_structural_timeline(track, output_dir / "structural_timeline.csv"),
+        "motifs_json": write_motifs_json(track, output_dir / "motifs.json"),
+        "relationships_npz": write_relationships_npz(track, output_dir / "relationships.npz"),
+    }
+    return {key: str(value) for key, value in outputs.items()}
