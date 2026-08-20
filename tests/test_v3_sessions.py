@@ -9,7 +9,7 @@ def test_stable_id_is_deterministic():
     assert stable_id("PDS", "a", "b") != stable_id("PDS", "a", "c")
 
 
-def test_session_manifest_links_artifacts():
+def test_session_manifest_links_artifacts_and_streams():
     artifacts = {
         "acoustic_json": "run/acoustic_summary.json",
         "acoustic_timeline_csv": "run/acoustic_timeline.csv",
@@ -27,12 +27,14 @@ def test_session_manifest_links_artifacts():
         hypothesis_ids=["H001"],
         transform_ids=["R001"],
         response_events_file="run/events.json",
+        behavior_events_file="run/behavior.json",
     )
     payload = manifest.to_dict()
-    assert payload["schema"] == "phonic-drive-session-manifest-v3alpha1"
+    assert payload["schema"] == "phonic-drive-session-manifest-v3alpha2"
     assert payload["trial_id"] == "T001"
     assert payload["motifs_file"] == "run/motifs.json"
     assert payload["response_events_file"] == "run/events.json"
+    assert payload["behavior_events_file"] == "run/behavior.json"
 
 
 def test_repeated_session_aggregation_counts_temporal_associations():
