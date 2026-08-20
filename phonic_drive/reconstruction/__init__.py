@@ -1,5 +1,6 @@
-"""Reconstruction, ablation, and provenance for Phonic Drive v3."""
+"""Reconstruction, ablation, rendering, and provenance for Phonic Drive v3."""
 from .protocol import ReconstructionManifest, TransformStep, ablation_manifest
+from .render import apply_manifest, apply_step, render_manifest
 from .transforms import (
     circular_shift,
     envelope_noise_control,
@@ -14,6 +15,9 @@ __all__ = [
     "ReconstructionManifest",
     "TransformStep",
     "ablation_manifest",
+    "apply_step",
+    "apply_manifest",
+    "render_manifest",
     "rms",
     "rms_match",
     "reverse_time",
