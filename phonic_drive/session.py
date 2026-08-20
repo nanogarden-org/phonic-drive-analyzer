@@ -24,6 +24,7 @@ class SessionManifest:
     hypothesis_ids: list[str] = field(default_factory=list)
     transform_ids: list[str] = field(default_factory=list)
     response_events_file: str | None = None
+    behavior_events_file: str | None = None
     acoustic_summary_file: str | None = None
     acoustic_timeline_file: str | None = None
     transitions_file: str | None = None
@@ -34,7 +35,7 @@ class SessionManifest:
     notes: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict:
-        return {"schema": "phonic-drive-session-manifest-v3alpha1", **asdict(self)}
+        return {"schema": "phonic-drive-session-manifest-v3alpha2", **asdict(self)}
 
     def write_json(self, path: Path) -> Path:
         path = Path(path)
@@ -52,6 +53,7 @@ def build_session_manifest(
     hypothesis_ids: list[str] | None = None,
     transform_ids: list[str] | None = None,
     response_events_file: str | None = None,
+    behavior_events_file: str | None = None,
 ) -> SessionManifest:
     analysis_id = stable_id("PDA", source_audio, artifacts.get("acoustic_json", ""))
     structural_id = stable_id("PDM", source_audio, artifacts.get("structural_json", ""))
@@ -61,6 +63,7 @@ def build_session_manifest(
         source_audio,
         trial_id or "",
         response_events_file or "",
+        behavior_events_file or "",
     )
     return SessionManifest(
         session_id=session_id,
@@ -72,6 +75,7 @@ def build_session_manifest(
         hypothesis_ids=list(hypothesis_ids or []),
         transform_ids=list(transform_ids or []),
         response_events_file=response_events_file,
+        behavior_events_file=behavior_events_file,
         acoustic_summary_file=artifacts.get("acoustic_json"),
         acoustic_timeline_file=artifacts.get("acoustic_timeline_csv"),
         transitions_file=artifacts.get("transitions_json"),
