@@ -23,6 +23,8 @@ dev = [
 ]
 
 [project.scripts]
+# Human-facing desktop application. This is the normal interactive entry point.
+phonic-drive-ui = "phonic_drive.gui:main"
 # Compatibility command: v2 orchestration with extracted v3 primitives.
 phonic-drive = "phonic_drive.cli:main"
 # Native research command: one decode/STFT feeds A(t) and M(t).
