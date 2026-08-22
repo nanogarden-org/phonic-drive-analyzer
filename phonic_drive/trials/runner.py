@@ -28,19 +28,27 @@ KEYMAP = {
 }
 
 
-def _read_key() -> str:
-    """Read one key without requiring Enter on Windows or POSIX terminals."""
+def _read_key(timeout_s: float = 0.10) -> str | None:
+    """Poll for one key without blocking playback-completion detection."""
+    timeout_s = max(0.0, float(timeout_s))
     if sys.platform.startswith("win"):
         import msvcrt
-        return msvcrt.getwch()
+        deadline = time.monotonic() + timeout_s
+        while time.monotonic() < deadline:
+            if msvcrt.kbhit():
+                return msvcrt.getwch()
+            time.sleep(min(0.01, timeout_s))
+        return None
 
+    import select
     import termios
     import tty
     fd = sys.stdin.fileno()
     old = termios.tcgetattr(fd)
     try:
         tty.setcbreak(fd)
-        return sys.stdin.read(1)
+        ready, _, _ = select.select([sys.stdin], [], [], timeout_s)
+        return sys.stdin.read(1) if ready else None
     finally:
         termios.tcsetattr(fd, termios.TCSADRAIN, old)
 
@@ -79,7 +87,10 @@ def run_trial(
         while True:
             if player is not None and player.poll() is not None:
                 break
-            key = _read_key().lower()
+            key = _read_key()
+            if key is None:
+                continue
+            key = key.lower()
             if key == "q":
                 break
             response_type = KEYMAP.get(key)
