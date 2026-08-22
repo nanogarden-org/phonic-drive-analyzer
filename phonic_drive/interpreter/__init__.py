@@ -1,5 +1,6 @@
 """Evidence-oriented interpretation and repeated-session aggregation."""
 from .aggregate import aggregate_motif_response
+from .alignment import circular_shift_alignment
 from .evidence import (
     EvidenceStatement,
     LEVELS,
@@ -19,4 +20,5 @@ __all__ = [
     "perturbation_evidence",
     "reconstruction_evidence",
     "aggregate_motif_response",
+    "circular_shift_alignment",
 ]
