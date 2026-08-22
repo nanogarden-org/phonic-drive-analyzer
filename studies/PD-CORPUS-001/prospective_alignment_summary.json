@@ -1,0 +1,104 @@
+{
+  "schema": "phonic-drive-prospective-alignment-summary-v1",
+  "corpus_id": "PD-CORPUS-001",
+  "status": "prospective_alignment_frozen_before_retrospective_unseal",
+  "raw_response_events_committed": false,
+  "method": {
+    "motif_alignment": "candidate motif windows and peak distances",
+    "transition_alignment": "major transition peak distances with 1.5 s proximity window",
+    "null_model": "circular time shift of the complete participant event stream, preserving event count, order, and inter-event spacing",
+    "simulations": 20000,
+    "interpretation": "exploratory; no causal or physiological claim; subtype tests are not multiple-comparison corrected"
+  },
+  "tracks": [
+    {
+      "sequence": 4,
+      "label": "LED Spirals",
+      "duration_s": 195.99963718820862,
+      "response_events": 47,
+      "response_counts": {
+        "perceived_movement": 19,
+        "piloerection": 11,
+        "spatial_change": 9,
+        "emotional_peak": 6,
+        "release": 1,
+        "pressure_tension": 1
+      },
+      "motifs": {
+        "candidate_count": 24,
+        "motif_window_hits": 14,
+        "median_abs_peak_distance_s": 2.7701285886621747,
+        "circular_shift_p_window_hits_ge": 0.37613119344032797,
+        "circular_shift_p_median_distance_le": 0.12919354032298386,
+        "summary": "No overall motif-alignment effect above circular-shift null."
+      },
+      "major_transitions": {
+        "candidate_count": 12,
+        "events_within_1_5_s": 15,
+        "median_abs_transition_distance_s": 4.393720739228986,
+        "circular_shift_p_hits_ge": 0.05674716264186791,
+        "circular_shift_p_median_distance_le": 0.04714764261786911,
+        "summary": "Near-threshold whole-event transition relationship; retain for replication rather than treating as established."
+      }
+    },
+    {
+      "sequence": 5,
+      "label": "Retribution",
+      "duration_s": 159.9158276643991,
+      "response_events": 44,
+      "response_counts": {
+        "piloerection": 12,
+        "pressure_tension": 8,
+        "emotional_peak": 7,
+        "perceived_movement": 7,
+        "spatial_change": 6,
+        "release": 4
+      },
+      "motifs": {
+        "candidate_count": 24,
+        "motif_window_hits": 18,
+        "median_abs_peak_distance_s": 1.8853811654193358,
+        "circular_shift_p_window_hits_ge": 0.5778211089445527,
+        "circular_shift_p_median_distance_le": 0.47237638118094094,
+        "summary": "No overall motif-alignment effect above circular-shift null.",
+        "exploratory_subtypes": {
+          "emotional_peak": {
+            "events": 7,
+            "motif_window_hits": 4,
+            "median_abs_peak_distance_s": 0.5764280696147921,
+            "circular_shift_p_median_distance_le": 0.014599270036498175
+          },
+          "spatial_change": {
+            "events": 6,
+            "motif_window_hits": 5,
+            "median_abs_peak_distance_s": 0.8316385481859783,
+            "circular_shift_p_window_hits_ge": 0.05009749512524374,
+            "circular_shift_p_median_distance_le": 0.054247287635618216
+          }
+        }
+      },
+      "major_transitions": {
+        "candidate_count": 12,
+        "events_within_1_5_s": 12,
+        "median_abs_transition_distance_s": 4.907146811111222,
+        "circular_shift_p_hits_ge": 0.21468926553672316,
+        "circular_shift_p_median_distance_le": 0.5216239188040598,
+        "exploratory_subtypes": {
+          "emotional_peak": {
+            "events": 7,
+            "events_within_1_5_s": 4,
+            "median_abs_transition_distance_s": 1.4620357179137677,
+            "circular_shift_p_hits_ge": 0.03234838258087096,
+            "circular_shift_p_median_distance_le": 0.029548522573871305
+          }
+        }
+      }
+    }
+  ],
+  "prospective_conclusion": [
+    "The prospective data do not support a generic claim that participant response events broadly coincide with every detected motif.",
+    "LED Spirals shows a tentative whole-event relationship to the strongest acoustic transitions.",
+    "Retribution shows narrower exploratory structure: emotional peaks occur unusually close to motif and major-transition peaks, and spatial-change events cluster around motif windows.",
+    "These subtype findings require replication and perturbation/reconstruction tests before they can move above temporal/structural association evidence."
+  ]
+}
