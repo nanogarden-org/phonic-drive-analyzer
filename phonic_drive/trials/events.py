@@ -80,14 +80,29 @@ def event_windows(event: ResponseEvent, *, pre_s: tuple[float, ...] = (0.25, 0.5
     ]
 
 
+def _motif_peak(motif: dict) -> float | None:
+    """Read the canonical v3 motif peak with compatibility fallbacks."""
+    for key in ("peak_s", "peak_time_s", "time_s"):
+        value = motif.get(key)
+        if value is not None:
+            return float(value)
+    return None
+
+
+def _motif_id(motif: dict) -> str | None:
+    """Read the canonical v3 candidate id with compatibility fallback."""
+    value = motif.get("candidate_id", motif.get("id"))
+    return str(value) if value is not None else None
+
+
 def nearest_motifs(event: ResponseEvent, motifs: list[dict], *, max_lag_s: float = 10.0) -> list[dict]:
     """Find motif candidates whose peak precedes or closely follows a response event."""
     matches = []
     for motif in motifs:
-        peak = motif.get("peak_time_s", motif.get("time_s"))
+        peak = _motif_peak(motif)
         if peak is None:
             continue
-        lag = event.session_time_s - float(peak)
+        lag = event.session_time_s - peak
         if -1.0 <= lag <= max_lag_s:
-            matches.append({"motif_id": motif.get("id"), "peak_time_s": float(peak), "lag_s": float(lag)})
+            matches.append({"motif_id": _motif_id(motif), "peak_time_s": peak, "lag_s": float(lag)})
     return sorted(matches, key=lambda row: abs(row["lag_s"]))
