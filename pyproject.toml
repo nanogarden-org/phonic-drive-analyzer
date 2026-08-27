@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "phonic-drive-analyzer"
-version = "0.2.0"
-description = "Batch-capable acoustic and state-space analyzer with optional Phonic Drive annotations"
+version = "0.3.0.dev0"
+description = "Time-resolved acoustic, motif, trial, and state-space research toolkit"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -13,6 +13,7 @@ dependencies = [
   "scipy>=1.10",
   "matplotlib>=3.7",
   "pydub>=0.25.1",
+  "audioop-lts; python_version >= '3.13'",
   "PyYAML>=6.0",
 ]
 
@@ -22,10 +23,26 @@ dev = [
 ]
 
 [project.scripts]
-phonic-drive = "phonic_drive_analysis_v2:main"
+# Human-facing desktop application. This is the normal interactive entry point.
+phonic-drive-ui = "phonic_drive.gui:main"
+# Compatibility command: v2 orchestration with extracted v3 primitives.
+phonic-drive = "phonic_drive.cli:main"
+# Native research command: one decode/STFT feeds A(t) and M(t).
+phonic-drive-v3 = "phonic_drive.v3_cli:main"
+# Migration validation across a representative corpus.
+phonic-drive-corpus = "phonic_drive.corpus_runner:main"
+# Numbered study folders with sealed retrospective notes and prospective tracks.
+phonic-drive-study = "phonic_drive.study_cli:main"
+# Synchronized playback plus timestamp-first participant markers.
+phonic-drive-trial = "phonic_drive.trials.runner:main"
+# Aggregation, recipes, schema operations, and shared timeline visualization.
+phonic-drive-ops = "phonic_drive.ops_cli:main"
 
 [tool.setuptools]
 py-modules = ["phonic_drive_analysis_v2"]
+
+[tool.setuptools.packages.find]
+include = ["phonic_drive*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

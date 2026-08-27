@@ -1,0 +1,49 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Shader" path="res://shaders/phonic_mesh.gdshader" id="2_shader"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mesh"]
+shader = ExtResource("2_shader")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_surface"]
+size = Vector2(8, 8)
+subdivide_width = 96
+subdivide_depth = 96
+material = SubResource("ShaderMaterial_mesh")
+
+[node name="PhonicDriveVisualizer" type="Node3D"]
+script = ExtResource("1_main")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_surface")
+rotation_degrees = Vector3(-72, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 4.6, 8.2)
+current = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="PanelContainer" parent="HUD"]
+offset_left = 20.0
+offset_top = 18.0
+offset_right = 430.0
+offset_bottom = 146.0
+
+[node name="VBox" type="VBoxContainer" parent="HUD/Panel"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="HUD/Panel/VBox"]
+layout_mode = 2
+text = "PHONIC DRIVE — GODOT VISUALIZER"
+
+[node name="Status" type="Label" parent="HUD/Panel/VBox"]
+layout_mode = 2
+text = "Waiting for Python visual state…"
+
+[node name="Metrics" type="Label" parent="HUD/Panel/VBox"]
+layout_mode = 2
+text = "A(t) / M(t) renderer contract"
