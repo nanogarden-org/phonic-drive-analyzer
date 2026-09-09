@@ -1,0 +1,42 @@
+schema:
+  name: phonic-drive-session
+  version: "1.0"
+
+identity:
+  id: pd-session-example
+  type: listening-session
+
+provenance:
+  created_at: 2026-08-18T00:00:00-04:00
+  created_by: user
+  software:
+    name: phonic-drive
+    version: "0.3.0-dev"
+
+relations:
+  artifact: pd-artifact-example
+  acoustic_observation: pd-acoustic-example
+  experience_report: pd-experience-example
+  correlation_report: pd-correlation-example
+
+tags:
+  - example
+  - headphones
+
+epistemic_status:
+  layer: session-manifest
+  measurement_claim: false
+  causation_claim: false
+
+conditions:
+  listening_mode: headphones
+  posture: seated
+  eyes: closed
+  environment: quiet
+  volume_description: comfortable
+  notes: synthetic example only
+
+status:
+  experience_capture_complete: true
+  acoustic_analysis_complete: true
+  correlation_complete: true

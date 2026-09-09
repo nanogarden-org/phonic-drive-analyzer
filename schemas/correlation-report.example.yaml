@@ -1,0 +1,59 @@
+schema:
+  name: phonic-drive-correlation-report
+  version: "1.0"
+
+identity:
+  id: pd-correlation-example
+  type: correlation-report
+
+provenance:
+  created_at: 2026-08-18T00:00:00-04:00
+  created_by: phonic-drive
+  software:
+    name: phonic-drive
+    version: "0.3.0-dev"
+
+relations:
+  session: pd-session-example
+  acoustic_source: pd-acoustic-example
+  experiential_source: pd-experience-example
+  derived_from:
+    - pd-acoustic-example
+    - pd-experience-example
+
+tags:
+  - example
+  - temporal-association
+
+epistemic_status:
+  layer: derived-association
+  measurement_claim: false
+  causation_claim: false
+
+associations:
+  - association_id: C001
+    acoustic_event: A001
+    experiential_event: P001
+    temporal:
+      acoustic_time_s: 63.42
+      experiential_time_s: 63.84
+      delta_s: 0.42
+    acoustic_context:
+      dominant_changes:
+        - stereo-space shift
+      normalized_magnitude: 0.96
+    experiential_context:
+      piloerection: true
+      perceived_motion_without_body_motion: true
+      perceived_directions:
+        - forward
+        - expanding
+    conclusion:
+      class: association
+      statement: The independently recorded events occurred within the configured temporal window.
+      confidence_0_1: 0.73
+      not_supported:
+        - causation
+        - neurological mechanism
+        - physiological mechanism
+        - acoustic-biological resonance
