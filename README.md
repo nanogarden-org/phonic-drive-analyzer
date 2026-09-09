@@ -1,6 +1,6 @@
 # Phonic Drive Analyzer
 
-A batch-capable acoustic and state-space analysis tool for exploring how music changes over time.
+A batch-capable acoustic, state-space, and temporal-geometry analysis tool for exploring how music changes over time.
 
 The project deliberately keeps two layers separate:
 
@@ -8,6 +8,16 @@ The project deliberately keeps two layers separate:
 2. **Subjective Phonic Drive annotations** — optional `song_lens` YAML/TXT records describing perceived motion, dimensional expansion, stability, inflection points, and resonance anchors.
 
 The point is not to silently turn subjective experience into an objective claim. Instead, the tool puts both streams on a common timeline so they can be compared later.
+
+A new architectural layer extends the measured stream from individual features into **layered temporal geometry**: recurrence, coupling, divergence, transformation, and self-similarity measured over a shared temporal substrate.
+
+The compact invariant is:
+
+```text
+Same Ground != Same Growth
+```
+
+Tracks can share nearly the same tempo, meter, and phrase lattice while developing fundamentally different higher-order structures.
 
 ## Features
 
@@ -22,6 +32,7 @@ The point is not to silently turn subjective experience into an objective claim.
 - Attach optional `song_lens` annotations without mixing them into measured features.
 - Check whether user-declared resonance-anchor frequencies have nearby spectral energy.
 - Produce batch-level CSV/JSON comparison outputs.
+- Define a forward model for bar/phrase recurrence, self-similarity, spatial coupling, and emergent temporal geometry.
 
 ## Requirements
 
@@ -155,7 +166,34 @@ Z = stereo spatial width
 
 These are visualization coordinates, not claims that the axes directly measure cognition.
 
-See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the conceptual model.
+## Layered temporal geometry
+
+Phonic Drive now treats higher-order acoustic organization as a distinct analysis target:
+
+```text
+Ground + Layers + Relations + Transformations -> Emergent Geometry
+```
+
+Where:
+
+```text
+Ground          = tempo, meter, beat/bar/phrase lattice, harmonic reference
+Layers          = rhythm, spectrum, harmony, density, spatial/phase behavior
+Relations       = recurrence, coupling, convergence/divergence, lag, self-similarity
+Transformations = repeat, translate, expand, contract, phase-shift, deform, bifurcate, collapse
+```
+
+The goal is to distinguish tracks that share a common substrate but grow differently over it.
+
+Provisional structural classes include:
+
+- **hierarchical / lattice geometry** — smaller recurring cells remain visible inside larger recurrence intervals
+- **tessellated / state geometry** — reusable local cells occupy changing larger-scale states
+- **trajectory / transformational geometry** — a stable temporal ground persists while multivariate acoustic state continuously deforms and revisits related regions of state-space
+
+These are descriptive signal models, not genre labels or claims about artistic intent.
+
+See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full conceptual model.
 
 ## `song_lens` annotations
 
@@ -190,6 +228,14 @@ python -m py_compile phonic_drive_analysis_v2.py
 
 Likely next layers:
 
+- beat/bar/phrase grid extraction
+- bar-to-bar self-similarity matrices
+- recurrence score by musically meaningful lag
+- macro-dynamic envelope analysis
+- stereo-correlation trajectory analysis
+- cross-feature coupling trajectories
+- structural-boundary detection
+- provisional transformation classification with confidence/provenance
 - keyboard/workflow telemetry synchronized to audio time
 - user event-marker hotkeys during listening/work sessions
 - 3D trajectory viewer
