@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nanogarden-org.github.io/phonic-drive-analyzer/schemas/perceptual-morphogenesis-v1.schema.json",
+  "title": "Phonic Drive Perceptual Morphogenesis Annotations",
+  "description": "A versioned format for time-aligned first-person reports of perceived form and transformation during listening. These reports are subjective observations and are not measurements or causal claims.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "annotation_set_id", "source_stimulus", "listening_sessions"],
+  "properties": {
+    "schema": { "const": "phonic-drive-perceptual-morphogenesis-v1alpha1" },
+    "annotation_set_id": { "type": "string", "minLength": 1 },
+    "source_stimulus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "duration_s"],
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "artist": { "type": "string" },
+        "duration_s": { "type": "number", "exclusiveMinimum": 0 },
+        "source_id": { "type": "string" }
+      }
+    },
+    "listening_sessions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["session_id", "events"],
+        "properties": {
+          "session_id": { "type": "string", "minLength": 1 },
+          "listened_at": { "type": "string", "format": "date-time" },
+          "context_note": { "type": "string" },
+          "events": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/perceptualEvent" }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "textObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "description": { "type": "string" },
+        "labels": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "perceptualEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event_id", "time_range_s", "report"],
+      "properties": {
+        "event_id": { "type": "string", "minLength": 1 },
+        "time_range_s": {
+          "type": "array",
+          "description": "Approximate interval on the source stimulus timeline, [start, end].",
+          "prefixItems": [
+            { "type": "number", "minimum": 0 },
+            { "type": "number", "minimum": 0 }
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "report": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["form_description"],
+          "properties": {
+            "form_description": { "type": "string", "minLength": 1 },
+            "change_description": { "type": "string" },
+            "persistence_description": { "type": "string" }
+          }
+        },
+        "dimensions": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "particle_field": { "$ref": "#/$defs/textObservation" },
+            "aggregation": { "$ref": "#/$defs/textObservation" },
+            "topology": { "$ref": "#/$defs/textObservation" },
+            "growth": { "$ref": "#/$defs/textObservation" },
+            "transformation": { "$ref": "#/$defs/textObservation" },
+            "color_texture": { "$ref": "#/$defs/textObservation" },
+            "persistence": { "$ref": "#/$defs/textObservation" }
+          }
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Annotator's confidence in recalling/reporting this experience, not confidence in an objective interpretation."
+        },
+        "notes": { "type": "string" },
+        "acoustic_transition_ref": {
+          "type": "string",
+          "description": "Optional ID linking to a separately computed acoustic event; does not imply that the acoustic event caused the experience."
+        }
+      }
+    }
+  }
+}
