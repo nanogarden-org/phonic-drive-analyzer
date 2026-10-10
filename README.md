@@ -197,7 +197,7 @@ See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full conceptual model
 
 ## `song_lens` annotations
 
-See [`examples/annotations/song_lens.example.yaml`](examples/annotations/song_lens.example.yaml).
+See [`examples/annotations/song_lens.example.yaml`](examples/annotations/song_lens.example.yaml) for the existing annotation format. The versioned perceptual morphogenesis event schema adds time-aligned first-person reports of particle fields, aggregation, topology, growth, transformation, color/texture, and persistence. See the [schema guide](docs/PERCEPTUAL_MORPHOGENESIS_ANNOTATIONS.md), [JSON Schema](schemas/perceptual-morphogenesis-v1.schema.json), and [example](examples/annotations/perceptual_morphogenesis.example.yaml). These reports remain separate from measured acoustics; optional links to acoustic transitions do not assert causation.
 
 The analyzer keeps these records separate under `subjective_annotation` in the output summary. That makes it possible to later test relationships such as:
 
@@ -242,8 +242,12 @@ Likely next layers:
 - transition-type clustering across tracks
 - session-level comparisons across artists/playlists
 - richer tempo/onset estimation via an optional audio-analysis backend
-- annotation schema validation and versioning
+- richer annotation capture and repeated-session comparison
 
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+
+## Automated verification
+
+The Verification workflow runs the test suite on Windows and Linux with Python 3.11 and 3.12, on pull requests, pushes to `main`, and manual runs. It includes checks that the perceptual morphogenesis example conforms to its versioned JSON Schema. These are reference-implementation checks, not certification of deployment or integration readiness. Runtime language choices remain open to further operating-condition tests.
