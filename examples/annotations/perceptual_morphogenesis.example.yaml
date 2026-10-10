@@ -1,0 +1,36 @@
+schema: phonic-drive-perceptual-morphogenesis-v1alpha1
+annotation_set_id: example-quezacotl-session-set
+source_stimulus:
+  title: Quezacotl
+  artist: deadmau5
+  duration_s: 436
+  source_id: local-recording-1
+listening_sessions:
+  - session_id: listen-001
+    context_note: "Illustrative template only; replace with the listener's own report."
+    events:
+      - event_id: listen-001-event-001
+        time_range_s: [91, 120]
+        report:
+          form_description: "Describe what you experienced in your own words."
+          change_description: "Describe how it changed during this interval."
+          persistence_description: "Describe which earlier features remained recognizable."
+        dimensions:
+          particle_field:
+            description: "Perceived density, motion, or distribution."
+          aggregation:
+            description: "Whether elements gathered into clusters or separated."
+          topology:
+            labels: [points, strands, surface, mesh]
+            description: "Describe the perceived connections or arrangement."
+          growth:
+            description: "Expansion, branching, differentiation, or another perceived pattern."
+          transformation:
+            labels: [rotation, deformation, folding, dissolution]
+            description: "Describe the change in form."
+          color_texture:
+            description: "Describe perceived color or texture and how it shifted."
+          persistence:
+            description: "Describe what carried across the transition."
+        confidence: 0.5
+        notes: "Confidence describes recall/reporting, not objective truth."
